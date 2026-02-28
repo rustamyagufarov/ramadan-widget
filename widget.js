@@ -1,7 +1,7 @@
 module.exports.main = async () => {
 // ---------- DATA ----------
 let urlTimes =
-"https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/refs/heads/main/times.json"
+"https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/main/times.json"
 
 let fm = FileManager.local()
 
