@@ -10,38 +10,61 @@ let path = fm.joinPath(
   "times_cache.json"
 )
 
-let ramadanTimes
+let ramadanTimes = {}
 
-try {
+let needDownload = true
 
-  let req = new Request(urlTimes)
 
-  req.timeoutInterval = 10
+// проверяем есть ли кеш
+if (fm.fileExists(path)) {
 
-  ramadanTimes = await req.loadJSON()
+  try {
 
-  fm.writeString(
-    path,
-    JSON.stringify(ramadanTimes)
-  )
+    let cache = fm.readString(path)
 
-}
-catch(e) {
+    ramadanTimes = JSON.parse(cache)
 
-  if (fm.fileExists(path)) {
+    needDownload = false
 
-    ramadanTimes = JSON.parse(
-      fm.readString(path)
-    )
+  } catch(e) {
 
-  } else {
-
-    ramadanTimes = {}
+    needDownload = true
 
   }
 
 }
 
+
+// пробуем скачать новую версию
+if (needDownload) {
+
+  try {
+
+    let req = new Request(urlTimes)
+
+    req.timeoutInterval = 10
+
+    let json = await req.loadJSON()
+
+    ramadanTimes = json
+
+    fm.writeString(
+      path,
+      JSON.stringify(json)
+    )
+
+  } catch(e) {
+
+    // если не скачалось и кеша нет
+    if (!fm.fileExists(path)) {
+
+      ramadanTimes = {}
+
+    }
+
+  }
+
+}
 
 // ---------- DATE ----------
 function getLocalKey(date) {
