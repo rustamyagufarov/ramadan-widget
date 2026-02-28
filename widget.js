@@ -3,9 +3,47 @@ module.exports.main = async () => {
 let urlTimes =
 "https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/refs/heads/main/times.json"
 
-let req = new Request(urlTimes)
+let urlTimes =
+"https://raw.githubusercontent.com/USERNAME/ramadan-widget/main/times.json"
 
-let ramadanTimes = await req.loadJSON()
+let fm = FileManager.local()
+
+let path = fm.joinPath(
+  fm.documentsDirectory(),
+  "times_cache.json"
+)
+
+let ramadanTimes
+
+try {
+
+  let req = new Request(urlTimes)
+
+  req.timeoutInterval = 10
+
+  ramadanTimes = await req.loadJSON()
+
+  fm.writeString(
+    path,
+    JSON.stringify(ramadanTimes)
+  )
+
+}
+catch(e) {
+
+  if (fm.fileExists(path)) {
+
+    ramadanTimes = JSON.parse(
+      fm.readString(path)
+    )
+
+  } else {
+
+    ramadanTimes = {}
+
+  }
+
+}
 
 
 // ---------- DATE ----------
