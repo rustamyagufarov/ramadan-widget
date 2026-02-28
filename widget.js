@@ -283,6 +283,13 @@ function addCalendar(widget, state) {
   widget.addSpacer(10)
 
 
+  let todayOnly = new Date(
+    state.displayDate.getFullYear(),
+    state.displayDate.getMonth(),
+    state.displayDate.getDate()
+  )
+
+
   for (let r = 0; r < layout.length; r++) {
 
     let row = widget.addStack()
@@ -302,6 +309,7 @@ function addCalendar(widget, state) {
 
       let key = getKey(dayDate)
 
+
       let cell =
       row.addStack()
 
@@ -313,7 +321,7 @@ function addCalendar(widget, state) {
 
       let t =
       cell.addText(
-        String(counter+1)
+        String(counter + 1)
       )
 
       t.font =
@@ -322,6 +330,25 @@ function addCalendar(widget, state) {
       t.textColor =
       new Color("#f2f2f7")
 
+
+      // ✅ ПРОШЕДШИЕ ДНИ
+
+      if (
+        dayDate < todayOnly &&
+        key !== state.todayKey
+      ) {
+
+        cell.backgroundColor =
+        new Color("#1B3A24")
+
+        cell.cornerRadius = 15
+
+        t.textColor =
+        new Color("#f2f2f7", 0.5)
+      }
+
+
+      // ✅ СЕГОДНЯ
 
       if (
         key === state.todayKey
@@ -338,16 +365,16 @@ function addCalendar(widget, state) {
         Color.white()
       }
 
+
       counter++
 
-      if (c < layout[r]-1)
+      if (c < layout[r] - 1)
         row.addSpacer()
     }
 
     widget.addSpacer(12)
   }
 }
-
 
 
 function buildWidget(state) {
