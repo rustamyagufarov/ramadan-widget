@@ -3,9 +3,6 @@ module.exports.main = async () => {
 let urlTimes =
 "https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/refs/heads/main/times.json"
 
-let urlTimes =
-"https://raw.githubusercontent.com/USERNAME/ramadan-widget/main/times.json"
-
 let fm = FileManager.local()
 
 let path = fm.joinPath(
