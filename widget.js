@@ -2,38 +2,60 @@ module.exports.main = async () => {
 
 // ---------- LOAD TIMES ----------
 
-let urlTimes = "https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/main/times.json"
+let urlTimes =
+"https://raw.githubusercontent.com/rustamyagufarov/ramadan-widget/main/times.json"
 
 let fm = FileManager.local()
 let dir = fm.libraryDirectory()
 let path = fm.joinPath(dir,"times_cache.json")
 
 let ramadanTimes = {}
-let needDownload = true
 
-if (fm.fileExists(path)) {
-  try {
-    ramadanTimes = JSON.parse(fm.readString(path))
-    needDownload = false
-  } catch(e) {
-    needDownload = true
-  }
+let downloaded = false
+
+// пробуем скачать
+
+try {
+
+  let req = new Request(urlTimes)
+  req.timeoutInterval = 8
+
+  let json = await req.loadJSON()
+
+  ramadanTimes = json
+
+  fm.writeString(
+    path,
+    JSON.stringify(json)
+  )
+
+  downloaded = true
+
+} catch(e) {
+
 }
 
-if (needDownload) {
-  try {
-    let req = new Request(urlTimes)
-    req.timeoutInterval = 8
-    let json = await req.loadJSON()
-    ramadanTimes = json
-    fm.writeString(path,JSON.stringify(json))
-  } catch(e) {
-    if (fm.fileExists(path)) {
-      ramadanTimes = JSON.parse(fm.readString(path))
-    } else {
+// если не скачали — берем кеш
+
+if(!downloaded){
+
+  if(fm.fileExists(path)){
+
+    try{
+
+      ramadanTimes =
+      JSON.parse(
+        fm.readString(path)
+      )
+
+    }catch(e){
+
       ramadanTimes = {}
+
     }
+
   }
+
 }
 
 // ---------- HELPERS ----------
