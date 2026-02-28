@@ -1,3 +1,4 @@
+module.exports.main = async () => {
 // ---------- DATA ----------
 const ramadanTimes = {
   "2026-02-19": { suhur: "05:53", iftar: "17:57" },
@@ -359,3 +360,4 @@ if (!config.runsInWidget) {
 
 Script.setWidget(widget);
 Script.complete();
+}
