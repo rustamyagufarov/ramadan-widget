@@ -5,18 +5,22 @@ let urlTimes =
 
 let fm = FileManager.local()
 
-let path = fm.joinPath(
-  fm.documentsDirectory(),
-  "times_cache.json"
-)
+let dir = fm.documentsDirectory()
+
+let path = fm.joinPath(dir, "times_cache.json")
+
+console.log("DIR:", dir)
+console.log("PATH:", path)
 
 let ramadanTimes = {}
 
 let needDownload = true
 
 
-// проверяем есть ли кеш
+// проверяем кеш
 if (fm.fileExists(path)) {
+
+  console.log("CACHE FOUND")
 
   try {
 
@@ -28,17 +32,25 @@ if (fm.fileExists(path)) {
 
   } catch(e) {
 
+    console.log("CACHE ERROR")
+
     needDownload = true
 
   }
 
+} else {
+
+  console.log("NO CACHE")
+
 }
 
 
-// пробуем скачать новую версию
+// скачивание
 if (needDownload) {
 
   try {
+
+    console.log("DOWNLOADING JSON")
 
     let req = new Request(urlTimes)
 
@@ -53,14 +65,11 @@ if (needDownload) {
       JSON.stringify(json)
     )
 
+    console.log("CACHE SAVED")
+
   } catch(e) {
 
-    // если не скачалось и кеша нет
-    if (!fm.fileExists(path)) {
-
-      ramadanTimes = {}
-
-    }
+    console.log("DOWNLOAD FAILED", e)
 
   }
 
