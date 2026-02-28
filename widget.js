@@ -158,64 +158,93 @@ function addCard(parent,title,text){
 
 function addCalendar(widget,state){
 
-  let startDate=getStartDate(state.times)
+  let startDate = getStartDate(state.times)
 
-  let totalDays=Object.keys(state.times).length
+  let keys = Object.keys(state.times)
+  keys.sort()
 
-  let layout=[7,7,7,8]
+  let totalDays = keys.length
 
-  let counter=0
+  let perRow = 7
 
-  let title=widget.addText("РАМАДАН")
-  title.font=Font.semiboldSystemFont(16)
-  title.textColor=new Color("#C6A94A")
+  let title = widget.addText("РАМАДАН")
+  title.font = Font.semiboldSystemFont(16)
+  title.textColor = new Color("#C6A94A")
 
   widget.addSpacer(10)
 
-  for(let r=0;r<layout.length;r++){
+  let counter = 0
 
-    let row=widget.addStack()
+  while(counter < totalDays){
+
+    let row = widget.addStack()
     row.layoutHorizontally()
 
-    for(let c=0;c<layout[r];c++){
+    for(let i=0;i<perRow;i++){
 
-      if(counter>=totalDays)break
+      if(counter >= totalDays) break
 
-      let dayDate=new Date(startDate)
-      dayDate.setDate(startDate.getDate()+counter)
+      let dayDate = new Date(startDate)
+      dayDate.setDate(
+        startDate.getDate() + counter
+      )
 
-      let key=getKey(dayDate)
+      let key = getKey(dayDate)
 
-      let cell=row.addStack()
-      cell.size=new Size(30,30)
+      let cell = row.addStack()
+
+      cell.size = new Size(30,30)
       cell.centerAlignContent()
 
-      let t=cell.addText(String(counter+1))
-      t.font=Font.semiboldSystemFont(16)
-      t.textColor=new Color("#f2f2f7")
+      let t = cell.addText(
+        String(counter+1)
+      )
 
-      if(dayDate<state.todayOnly && key!==state.todayKey){
-        cell.backgroundColor=new Color("#1B3A24")
-        cell.cornerRadius=15
-        t.textColor=new Color("#f2f2f7",0.5)
+      t.font =
+      Font.semiboldSystemFont(16)
+
+      t.textColor =
+      new Color("#f2f2f7")
+
+      // прошедшие
+
+      if(
+        dayDate < state.todayOnly &&
+        key !== state.todayKey
+      ){
+        cell.backgroundColor =
+        new Color("#1B3A24")
+
+        cell.cornerRadius = 15
+
+        t.textColor =
+        new Color("#f2f2f7",0.5)
       }
 
-      if(key===state.todayKey){
-        cell.cornerRadius=15
-        cell.borderWidth=5
-        cell.borderColor=new Color("#C6A94A",0.6)
-        t.textColor=Color.white()
+      // сегодня
+
+      if(
+        key === state.todayKey
+      ){
+        cell.cornerRadius = 15
+
+        cell.borderWidth = 5
+
+        cell.borderColor =
+        new Color("#C6A94A",0.6)
+
+        t.textColor = Color.white()
       }
 
       counter++
 
-      if(c<layout[r]-1) row.addSpacer()
+      if(i < perRow-1)
+        row.addSpacer()
     }
 
     widget.addSpacer(12)
   }
 }
-
 // ---------- BUILD ----------
 
 function buildWidget(state){
